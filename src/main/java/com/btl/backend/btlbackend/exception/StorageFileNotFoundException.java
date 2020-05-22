@@ -1,6 +1,4 @@
-package com.btl.backend.btlbackend.exception.storage;
-
-import com.btl.backend.btlbackend.exception.BaseException;
+package com.btl.backend.btlbackend.exception;
 
 public class StorageFileNotFoundException extends BaseException {
     private final static int ERROR_CODE = 502;

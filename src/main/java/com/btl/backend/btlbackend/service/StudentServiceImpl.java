@@ -47,6 +47,6 @@ public class StudentServiceImpl extends AbstractBaseService<StudentEntity, Stude
 
     @Override
     protected Logger getLogger() {
-        return null;
+        return logger;
     }
 }

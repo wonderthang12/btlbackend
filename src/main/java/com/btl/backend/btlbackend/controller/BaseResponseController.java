@@ -1,7 +1,7 @@
 package com.btl.backend.btlbackend.controller;
 
 import com.btl.backend.btlbackend.dto.ResponseMsg;
-import com.btl.backend.btlbackend.exception.storage.StorageFileNotFoundException;
+import com.btl.backend.btlbackend.exception.StorageFileNotFoundException;
 import com.btl.backend.btlbackend.msg.Msg;
 import com.btl.backend.btlbackend.util.ObjectMapperUtil;
 import org.apache.commons.io.FileUtils;

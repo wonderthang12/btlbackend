@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/menus")
+@RequestMapping(path = "/students")
 public class StudentController extends BaseController<StudentDTO, StudentService> {
 
     private final static Logger logger = LoggerFactory.getLogger(StudentController.class);
