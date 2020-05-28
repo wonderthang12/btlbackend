@@ -35,4 +35,15 @@ public class UserDTO extends BaseDTO {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String newPassword;
+
+    private Long studentId;
+
+    private Long teacherId;
+
+    private String userCode;
+
+    private String createdName;
+
+    private String updatedName;
+
 }

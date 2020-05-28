@@ -18,9 +18,12 @@ public class UserPrincipal implements UserDetails, Serializable {
     private String username;
     private String fullName;
     private String email;
+    private BaseCategoryDTO mainDepartment;
     private String password;
     private boolean isEnabled;
     private List<String> privileges;
+    private BaseCategoryDTO role;
+    private BaseCategoryDTO department;
 
 
     public UserPrincipal(Long id, String username, String fullName, String email, String password, boolean isEnabled) {
@@ -32,6 +35,19 @@ public class UserPrincipal implements UserDetails, Serializable {
         this.isEnabled = isEnabled;
 
         this.privileges = new ArrayList<>();
+    }
+
+
+    public UserPrincipal(Long id, String username, String fullName, String email, String password, boolean isEnabled, List<String> privileges, BaseCategoryDTO role, BaseCategoryDTO department) {
+        this.id = id;
+        this.username = username;
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.isEnabled = isEnabled;
+        this.privileges = privileges;
+        this.role = role;
+        this.department = department;
     }
 
     @Override

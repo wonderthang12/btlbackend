@@ -1,14 +1,19 @@
-package com.btl.backend.btlbackend.util;
+package com.btl.backend.btlbackend.security;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator.Builder;
+import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.btl.backend.btlbackend.constant.JWTConst;
+import com.btl.backend.btlbackend.config.constant.JWTConst;
+import com.btl.backend.btlbackend.enums.GenderEnum;
 import com.btl.backend.btlbackend.enums.ValidateTokenResult;
+import com.btl.backend.btlbackend.util.DateTimeUtils;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 
 import java.util.Date;
@@ -16,7 +21,37 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class JWTokenUtils {
+public class JwtTokenProvider {
+
+//    private byte[] secret;
+
+//    public Map<String, Object> generateToken(Long id, String username, String email, GenderEnum gender, String avatar, Map<String, Object> additionalInformation){
+//        Date now = new Date();
+//        Date exp = new Date(System.currentTimeMillis() + (1000*30));
+//
+//        JwtBuilder jwtBuilder = Jwts.builder()
+//                .claim("id", id)
+//                .claim("username", username)
+//                .claim("email", email)
+//                .claim("gender", gender)
+//                .claim("avatar", avatar);
+//
+//        String jwt = jwtBuilder.setIssuedAt(now)
+//                .setNotBefore(now)
+//                .setId(String.valueOf(Long.valueOf(id)))
+//                .setExpiration(exp).compact();
+//
+//        additionalInformation.put("access_token", jwt);
+//        additionalInformation.put("token_type", "bearer");
+//        additionalInformation.put("id", id);
+//        additionalInformation.put("username", username);
+//        additionalInformation.put("email", email);
+//        additionalInformation.put("gender", gender);
+//        additionalInformation.put("avatar", avatar);
+//
+//        return  additionalInformation;
+//    }
+
     public static String generateToken() {
         return generateToken((Map<String, Object>) null);
     }
@@ -39,7 +74,7 @@ public class JWTokenUtils {
 
             String secrete = JWTConst.JWT_KEY;
             Algorithm algorithm = Algorithm.HMAC256(secrete);
-            Builder builder = JWT.create();
+            JWTCreator.Builder builder = JWT.create();
             Date currentDate = DateTimeUtils.getCurrentDate();
             builder.withIssuedAt(currentDate);
             builder.withExpiresAt(DateTimeUtils.addDays(currentDate, 365));
@@ -145,4 +180,6 @@ public class JWTokenUtils {
             return ValidateTokenResult.INVALID;
         }
     }
+
+
 }

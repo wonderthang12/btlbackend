@@ -21,9 +21,18 @@ public class StudentServiceImpl extends AbstractBaseService<StudentEntity, Stude
     @Autowired
     private StudentRepository repository;
 
+    @Autowired
+    private UserService userService;
+
     @Override
     protected StudentRepository getRepository() {
         return repository;
+    }
+
+    @Override
+    protected void specificMapToDTO(StudentEntity entity, StudentDTO dto) {
+        super.specificMapToDTO(entity, dto);
+        dto.setCreatedName(userService.getUsernameById(entity.getCreatedBy()));
     }
 
     @Override
@@ -48,5 +57,23 @@ public class StudentServiceImpl extends AbstractBaseService<StudentEntity, Stude
     @Override
     protected Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    public StudentDTO create(StudentDTO dto) {
+        userService.init();
+        return super.create(dto);
+    }
+
+    @Override
+    public StudentDTO update(Long id, StudentDTO dto) {
+        userService.init();
+        return super.update(id, dto);
+    }
+
+    @Override
+    public void delete(Long id) {
+        super.delete(id);
+        userService.init();
     }
 }

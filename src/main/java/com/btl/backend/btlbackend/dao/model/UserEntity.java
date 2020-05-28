@@ -57,5 +57,20 @@ public class UserEntity extends BaseEntity {
     @Transient
     private String loginToken;
 
+    @OneToOne
+    @JoinColumn(name = "student_id", insertable = false, updatable = false)
+    private StudentEntity student;
 
+    @Column(name = "student_id")
+    private Long studentId;
+
+    @OneToOne
+    @JoinColumn(name = "teacher_id", insertable = false, updatable = false)
+    private TeacherEntity teacher;
+
+    @Column(name = "teacher_id")
+    private Long teacherId;
+
+    @Column(name = "user_code")
+    private String userCode;
 }

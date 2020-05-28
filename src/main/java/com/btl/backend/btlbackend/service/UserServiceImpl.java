@@ -7,7 +7,7 @@ import com.btl.backend.btlbackend.dto.UserDTO;
 import com.btl.backend.btlbackend.enums.BlockEnum;
 import com.btl.backend.btlbackend.exception.BaseException;
 import com.btl.backend.btlbackend.msg.Msg;
-import com.btl.backend.btlbackend.util.JWTokenUtils;
+import com.btl.backend.btlbackend.security.JwtTokenProvider;
 import com.btl.backend.btlbackend.util.StringUtil;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
@@ -15,11 +15,14 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Objects;
-import java.util.UUID;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 @Service
 public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, UserRepository> implements UserService {
@@ -28,15 +31,23 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
 
     private static ModelMapper modelMapper = null;
 
+    private Long userId = null;
+
     @Autowired
     private UserRepository repository;
 
     @Autowired
-    private JWTokenUtils jwTokenUtils;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Override
     protected UserRepository getRepository() {
         return null;
+    }
+
+    @Override
+    protected void specificMapToDTO(UserEntity entity, UserDTO dto) {
+        super.specificMapToDTO(entity, dto);
+        dto.setCreatedName(getUsernameById(entity.getCreatedBy()));
     }
 
     @Override
@@ -65,6 +76,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
 
     @Override
     public UserDTO create(UserDTO dto) {
+        init();
         UserEntity entity = mapToEntity(dto);
 
         if (Objects.isNull(entity.getUsername())) {
@@ -85,6 +97,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
 
     @Override
     public UserDTO update(Long id, UserDTO dto) {
+        init();
         UserEntity entity = getById(id);
         if (!entity.getEmail().equals(dto.getEmail()) && repository.findFirstByEmail(dto.getEmail()) != null) {
             throw new BaseException(1001, Msg.getMessage("Tồn tại tài khoản"));
@@ -133,20 +146,25 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
 
         UserEntity user = repository.findFirstByUsername(username.trim());
         if (!user.getPassword().equals(getHashPassword(password, user.getSalt()))) {
-            throw new BaseException(3, Msg.getMessage("Tồn tại password"));
+            throw new BaseException(3, Msg.getMessage("Sai password"));
         }
 
         if (user.getBlock() == BlockEnum.BLOCKED) {
             throw new BaseException(4, Msg.getMessage("Tai khoan da bi khoa"));
         }
 
-        user.setLoginToken(jwTokenUtils.generateToken(user.getId()));
-        return jwTokenUtils.generateToken(user.getId());
-
+        Map<String, Object> additionalInformation = new HashMap<>();
+        additionalInformation.put("avatar", user.getAvatar());
+        additionalInformation.put("gender", user.getGender());
+        additionalInformation.put("user_type", user.getUserType());
+//        additionalInformation.put("type", user.getType());
+        user.setLoginToken(jwtTokenProvider.generateToken(user.getId()));
+        return jwtTokenProvider.generateToken(user.getId());
     }
 
     @Override
     public UserDTO block(Long id) {
+        init();
         UserEntity user = getById(id);
 
         user.setBlock(user.getBlock().equals(BlockEnum.BLOCKED) ? BlockEnum.UNBLOCKED : BlockEnum.BLOCKED);
@@ -157,6 +175,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
 
     @Override
     public UserDTO resetPassword(Long id) {
+        init();
         UserEntity user = getById(id);
 
         user.setPassword(getHashPassword("123456", user.getSalt()));
@@ -166,6 +185,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
 
     @Override
     public UserDTO updatePassword(Long id, UserDTO userDto) {
+        init();
         UserEntity entity = getById(id);
         if (!Objects.equals(entity.getPassword(), getHashPassword(userDto.getPassword(), entity.getSalt()))) {
             throw new BaseException(1001, "Tồn tại password");
@@ -178,6 +198,7 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
 
     @Override
     public UserDTO updateEmail(Long id, UserDTO userDto) {
+        init();
         UserEntity user = getById(id);
 
         if (user.getEmail().equals(userDto.getEmail())) {
@@ -200,10 +221,39 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
 
     @Override
     public UserDTO updateAvatar(Long id, UserDTO userDto) {
+        init();
         UserEntity user = getById(id);
         user.setAvatar(userDto.getAvatar());
 
         repository.save(user);
         return mapToDTO(user);
     }
+
+    @Override
+    public void delete(Long id) {
+        super.delete(id);
+        init();
+    }
+
+    @Override
+    public void init() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        String token = request.getHeader("Authorization");
+        logger.info("Token ... " +token);
+        userId = JwtTokenProvider.getUserIdFromToken(token);
+        logger.info("UserId ..... " +userId);
+
+
+    }
+
+    @Override
+    public String getUsernameById(Long id) {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        String token = request.getHeader("Authorization");
+        logger.info("Token ... " +token);
+        id = JwtTokenProvider.getUserIdFromToken(token);
+        return repository.getUsernameById(id);
+    }
+
+
 }
