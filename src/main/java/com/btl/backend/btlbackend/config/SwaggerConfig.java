@@ -25,18 +25,6 @@ import java.util.List;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-//    @Bean
-//    public Docket api() {
-//        return new Docket(DocumentationType.SWAGGER_2)
-//                .useDefaultResponseMessages(false)
-//                .select()
-//                .apis(RequestHandlerSelectors.any())
-//                .paths(PathSelectors.any())
-//                .build();
-//    }
-
-
-
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -44,28 +32,40 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
-                .build()
-//                .apiInfo(apiInfo())
-                .securitySchemes(Arrays.asList(apiKey()))
-                .securityContexts(Arrays.asList(securityContext()));
+                .build();
     }
+
+
+
+//    @Bean
+//    public Docket api() {
+//        return new Docket(DocumentationType.SWAGGER_2)
+//                .useDefaultResponseMessages(false)
+//                .select()
+//                .apis(RequestHandlerSelectors.any())
+//                .paths(PathSelectors.any())
+//                .build()
+////                .apiInfo(apiInfo())
+//                .securitySchemes(Arrays.asList(apiKey()))
+//                .securityContexts(Arrays.asList(securityContext()));
+//    }
 
 //    private ApiInfo apiInfo() {
 //        return new ApiInfoBuilder().version(swaggerProperties.getVersion()).title(swaggerProperties.getTitle()).description(swaggerProperties.getDescription()).build();
 //    }
 
-    private ApiKey apiKey() {
-        return new ApiKey("Authorization", "Authorization", "Authorization");
-    }
-
-    private SecurityContext securityContext() {
-        return SecurityContext.builder()
-                .securityReferences(defaultAuth())
-                .forPaths(Predicates.not(PathSelectors.ant("/auth/login")))
-                .build();
-    }
-
-    private List<SecurityReference> defaultAuth() {
-        return Arrays.asList(new SecurityReference("Authorization", new AuthorizationScope[] {new AuthorizationScope("global", "accessEverything")}));
-    }
+//    private ApiKey apiKey() {
+//        return new ApiKey("Authorization", "Authorization", "Authorization");
+//    }
+//
+//    private SecurityContext securityContext() {
+//        return SecurityContext.builder()
+//                .securityReferences(defaultAuth())
+//                .forPaths(Predicates.not(PathSelectors.ant("/auth/login")))
+//                .build();
+//    }
+//
+//    private List<SecurityReference> defaultAuth() {
+//        return Arrays.asList(new SecurityReference("Authorization", new AuthorizationScope[] {new AuthorizationScope("global", "accessEverything")}));
+//    }
 }
