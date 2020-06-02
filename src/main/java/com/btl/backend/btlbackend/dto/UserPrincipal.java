@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +25,6 @@ public class UserPrincipal implements UserDetails, Serializable {
     private List<String> privileges;
     private BaseCategoryDTO role;
     private BaseCategoryDTO department;
-
 
     public UserPrincipal(Long id, String username, String fullName, String email, String password, boolean isEnabled) {
         this.id = id;

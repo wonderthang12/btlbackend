@@ -23,4 +23,5 @@ public interface UserRepository extends BaseRepository<UserEntity, UserDTO, Long
     @Transactional(readOnly = true)
     @Query("select e.username from UserEntity e where e.id = ?1")
     String getUsernameById(Long id);
+
 }

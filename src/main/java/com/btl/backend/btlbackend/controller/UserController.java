@@ -9,18 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/users")
+@CrossOrigin(origins = "*")
 public class UserController extends BaseController<UserDTO, UserService> {
 
     private final static Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService service;
-
-
+    
     @Override
     protected UserService getService() {
         return service;
@@ -34,6 +35,7 @@ public class UserController extends BaseController<UserDTO, UserService> {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "Authorization token",
                     required = true, dataType = "string", paramType = "header")})
+//    @PreAuthorize("hasAnyAuthority('USER_READ')")
     @Override
     public ResponseEntity<ResponseMsg> create(@RequestBody UserDTO dto) {
         return super.create(dto);

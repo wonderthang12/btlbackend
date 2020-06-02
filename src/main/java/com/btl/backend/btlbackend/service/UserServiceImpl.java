@@ -15,7 +15,6 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -157,7 +156,6 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
         additionalInformation.put("avatar", user.getAvatar());
         additionalInformation.put("gender", user.getGender());
         additionalInformation.put("user_type", user.getUserType());
-//        additionalInformation.put("type", user.getType());
         user.setLoginToken(jwtTokenProvider.generateToken(user.getId()));
         return jwtTokenProvider.generateToken(user.getId());
     }
@@ -254,6 +252,5 @@ public class UserServiceImpl extends AbstractBaseService<UserEntity, UserDTO, Us
         id = JwtTokenProvider.getUserIdFromToken(token);
         return repository.getUsernameById(id);
     }
-
 
 }

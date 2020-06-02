@@ -1,9 +1,10 @@
 package com.btl.backend.btlbackend.service;
 
+import com.btl.backend.btlbackend.dao.model.UserEntity;
 import com.btl.backend.btlbackend.dto.LoginDTO;
 import com.btl.backend.btlbackend.dto.UserDTO;
-
-import java.util.Map;
+import com.btl.backend.btlbackend.dto.UserPrincipal;
+import org.springframework.security.core.Authentication;
 
 public interface UserService extends BaseService<UserDTO> {
 
@@ -22,4 +23,5 @@ public interface UserService extends BaseService<UserDTO> {
     void init();
 
     String getUsernameById(Long id);
+
 }

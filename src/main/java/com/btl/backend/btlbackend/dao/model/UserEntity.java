@@ -9,6 +9,8 @@ import org.hibernate.annotations.Where;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -73,4 +75,5 @@ public class UserEntity extends BaseEntity {
 
     @Column(name = "user_code")
     private String userCode;
+
 }
